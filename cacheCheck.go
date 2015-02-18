@@ -36,11 +36,12 @@ func (l *Middleware) ServeHTTP(w http.ResponseWriter, req *http.Request, next ht
 	if err == nil && len(exists) > 0 {
 		log.Printf("Cache hit for %v\n", key)
 		cacheHit = true
+		//TODO: Set The expire cache header
 		w.Write([]byte(exists))
 		return
 	} else {
 		cacheHit = false
-		log.Printf("This Was a miss: %v%v", l.ks, key)
+		log.Printf("This Was a miss: %v", key)
 		next(w, req)
 	}
 }
@@ -58,4 +59,9 @@ func SetCache(key string, val string, c redis.Conn) {
 func SetExpire(key string, ttl int, c redis.Conn) {
 	reply, err := redis.Int(c.Do("EXPIRE", key, ttl))
 	log.Printf("reply: %v error: %v", reply, err)
+}
+
+func RemoveCache(key string, c redis.Conn) {
+	reply, err := redis.String(c.Do("DEL", key))
+	log.Printf("Cache Deleted %v For: %v Error:", reply, key, err)
 }
