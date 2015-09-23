@@ -37,6 +37,7 @@ func (l *Middleware) ServeHTTP(w http.ResponseWriter, req *http.Request, next ht
 		log.Printf("Cache hit for %v\n", key)
 		cacheHit = true
 		//TODO: Set The expire cache header
+		w.Header().Set("Content-Type", "application/json")
 		w.Write([]byte(exists))
 		return
 	} else {
