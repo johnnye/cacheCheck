@@ -34,7 +34,6 @@ func (l *Middleware) ServeHTTP(w http.ResponseWriter, req *http.Request, next ht
 	exists, err := redis.String(l.c.Do("GET", key))
 
 	if err == nil && len(exists) > 0 {
-		log.Printf("Cache hit for %v\n", key)
 		cacheHit = true
 		//TODO: Set The expire cache header
 		w.Header().Set("Content-Type", "application/json")
